@@ -1,4 +1,4 @@
-const KAKAO_DEFAULT_VERSION = '1.17.1';
+import KakaoManager from '../kakaoManager'
 
 /**
  * Kakao module base.
@@ -6,70 +6,74 @@ const KAKAO_DEFAULT_VERSION = '1.17.1';
 class Base {
   constructor ({ 
     Kakao, 
-    version = KAKAO_DEFAULT_VERSION, 
-    appKey 
+    loadVersion, 
+    appKey,
+
+    kakaoManager,
+    clone = true
   } = {}) {
-    if (!appKey) throw new Error('Kakao module: appKey is required');
-    this.appKey = appKey;
+    const cleanup = !!this.appKey;
 
-    this.Kakao = Kakao;
-    this.version = (Kakao && Kakao.VERSION) || version;    
-  }
-
-  getKakao() {
-    let promise;
-    
-    /** 
-     * if it already have Kakao instance, resolve it, or load from web.
-     */
-    if (this.Kakao) {
-      // console.log('cached', this.Kakao);
-      promise = Promise.resolve(this.Kakao);
+    if (kakaoManager) {
+      this.kakaoManager = kakaoManager;
     } else {
-      // console.log('from web')
-      const kakaoUrl = `https://developers.kakao.com/sdk/js/kakao-${this.version}.js`
-      promise = loadJs({
-        url: kakaoUrl,
-        async: true,
-      })
-      .then(() => {
-        /** TODO: non-browser env support  */
-        // console.log('here')
-        this.Kakao = window.Kakao;
-        return this.Kakao;
-      })
-      .catch(() => {
-        throw new Error(`fail to fetch KaKao instance from ${kakaoUrl}`)
-      });
+      this.kakaoManager = new KakaoManager({ Kakao, loadVersion, clone, appKey, cleanup });
     }
 
-    /**
-     * Kakao instance should be initialized to use Auth module. 
-     */
-    return promise.then(Kakao => {
-      // console.log('init', Kakao)
-      if (!Kakao.Auth) {
-        if (!this.appKey) throw new Error("Kakao Auth: appKey is required");
-        Kakao.init(this.appKey);     
-      }
-      return Kakao;
-    })
+    // appKey
+    this.appKey = appKey;
   }
 
-  setKakao(Kakao) {
-    if (Kakao.VERSION && Kakao.init) return this.Kakao = Kakao;
-    return false;
-  }
-  
   /**
-   * Promised Kakao.init()
-   * @param {string} appKey 
+   * get Kakao module
    */
-  init (appKey) {
-    return this.getKakao().then(Kakao => {
-      Kakao.init(appkey);
-      return Kakao;
-    })
+  getKakao() {
+    return this.kakaoManager.getKakao();
+  }
+
+  /**
+   * manually set Kakao module
+   * @param {object} Kakao
+   * @param {object}
+   */
+  setKakao(...args) {
+    return this.kakaoManager.setKakao(...args);
+  }
+
+  /**
+   * synchronously initialize Kakao module
+   * @param {string} appKey - Kakao appKey
+   * @param {object} options 
+   * @param {boolean} options.cleanup - cleanup before init
+   */
+  initSync(...args) {
+    return this.kakaoManager.initSync(...args);
+  }
+
+  /**
+   * asynchronous initialize. 
+   * init after load kakao module
+   * @param {*} args 
+   * @return {promise}
+   */
+  init(...args) {
+    return this.kakaoManager.init(...args);
+  }
+
+  /**
+   * return raw Kakao module
+   * @return {object} Kakao module
+   */
+  raw() {
+    return this.kakaoManager.Kakao;
+  }
+
+  /**
+   * kakao module version
+   * @return {string} version
+   */
+  version() {
+    return this.kakaoManager.Kakao && this.kakaoManager.Kakao.VERSION;
   }
 }
 

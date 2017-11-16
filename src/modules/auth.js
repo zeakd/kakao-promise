@@ -5,6 +5,8 @@ import Base from './base';
  */
 class Auth extends Base {
   constructor (options) {
+    if (!options.appKey) throw new Error('kakao-promise/Auth: appKey is required');
+    
     super (options);
   }
 
@@ -56,26 +58,33 @@ class Auth extends Base {
   }  
 
   getAccessToken() {
-    return this.Kakao && this.Kakao.Auth && this.Kakao.Auth.getAccessToken();
+    const _Kakao = this.kakaoManager.Kakao;
+    return _Kakao && _Kakao.Auth && _Kakao.Auth.getAccessToken();
   }
 
   getRefreshToken() {
-    return this.Kakao && this.Kakao.Auth && this.Kakao.Auth.getRefreshToken();
+    const _Kakao = this.kakaoManager.Kakao;
+    return _Kakao && _Kakao.Auth && _Kakao.Auth.getRefreshToken();
   }
 
   setAccessToken(token, persist) {
-    return this.Kakao && this.Kakao.Auth && this.Kakao.Auth.setAccessToken(token, persist);
+    const _Kakao = this.kakaoManager.Kakao;
+    return _Kakao && _Kakao.Auth && _Kakao.Auth.setAccessToken(token, persist);
   }
 
   setRefreshToken(token, persist) {
-    return this.Kakao && this.Kakao.Auth && this.Kakao.Auth.setAccessToken(token, persist);
+    const _Kakao = this.kakaoManager.Kakao;
+    return _Kakao && _Kakao.Auth && _Kakao.Auth.setRefreshToken(token, persist);
   }
 
   getAppKey() {
-    return this.Kakao && this.Kakao.Auth && this.Kakao.Auth.getAppKey();
+    const _Kakao = this.kakaoManager.Kakao;
+    return _Kakao && _Kakao.Auth && _Kakao.Auth.getAppKey();
   }
 
   cleanup() {
-    return this.Kakao && this.KakaoAuth && this.Kakao.Auth.cleanup();
+    return this.kakaoModule.cleanup('Auth');
   }
 }
+
+export default Auth;

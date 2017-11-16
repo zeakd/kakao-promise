@@ -6,14 +6,26 @@ import API from './api';
  * promised Kakao module.
  */
 class Kakao extends Base {
-  constructor (options) {
+  constructor (options = {}) {
     super (options);
 
-    this.Auth = new Auth({ Kakao });
-    this.Auth.getKakao = this.getKakao;
+    const appKey = options.appKey;
+    if (appKey) {
+      this.appkey = appKey;
+      init();
+    }
+  }
 
-    this.API = new API({ Kakao });
-    this.API.getKakao = this.getKakao;
+  init(appKey = this.appKey) {
+    this.Auth = new Auth({ 
+      appKey: this.appKey,
+      kakaoManager: this.kakaoManager,
+    });
+
+    this.API = new API({
+      appKey: this.appKey,
+      kakaoManager: this.kakaoManager,
+    });
   }
 }
 
