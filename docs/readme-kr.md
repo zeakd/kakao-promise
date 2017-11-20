@@ -2,6 +2,7 @@
 > Simple promise wrapper for Kakao sdk with high usability
 
 Promise save your life. 
+
 Kakao js sdk의 jquery style callback에서 벗어나고자 만들었습니다. 최대한 Kakao module과 비슷하되, 비동기 요청만 Promise로 만들고자합니다.
 
 ## Install
@@ -89,7 +90,7 @@ kp.init(appKey);
 ```
 
 ## API
-### cosnt kp = new KaKaoPromise(options);
+### const kp = new KaKaoPromise(options);
 kakao promise 객체를 리턴하며 이 객체는 Kakao sdk 와 동일한 Submodule(AUTH, API 등)을 가지고 있습니다. 
 
 #### options.Kakao
@@ -124,7 +125,7 @@ promise객체를 리턴하며 sdk와는 다르게 callback을 지원하지 않�
 
 promise객체를 리턴하며 sdk와는 다르게 callback을 지원하지 않습니다.
 
-### 그 외 auth method
+### auth.methods 그 외
 - getAccessToken
 - getRefreshToken
 - setAccessToken
@@ -147,7 +148,7 @@ Kakao.API의 Promise wrapping 객체를 리턴합니다.
 
 promise객체를 리턴하며 sdk와는 다르게 success, fail, always를 지원하지 않습니다. 다른 settings는 동일합니다.
 
-### 그외 api method
+### api.methods 그 외
 
 - cleanup
 

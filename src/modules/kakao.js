@@ -12,7 +12,7 @@ class Kakao extends Base {
     const appKey = options.appKey;
     if (appKey) {
       this.appkey = appKey;
-      init();
+      this.init();
     }
   }
 
